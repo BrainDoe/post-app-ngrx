@@ -1,21 +1,26 @@
-==={{ isSubmitting$ | async }}===
-<div>
-  <h1>Register Page</h1>
-  <p><a href="/login">have an account? </a></p>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <fieldset>
-      <input type="text" placeholder="Username" formControlName="username" />
-    </fieldset>
-    <fieldset>
-      <input type="email" placeholder="Email" formControlName="email" />
-    </fieldset>
-    <fieldset>
-      <input
-        type="password"
-        placeholder="Password"
-        formControlName="password"
-      />
-    </fieldset>
-    <button [disabled]="isSubmitting$ | async">Submit</button>
-  </form>
-</div>
+<ng-container *ngIf="data$ | async as data">
+  <div>
+    <backend-error-messages
+      *ngIf="data.backendErrors"
+      [backendErrors]="data.backendErrors"
+    ></backend-error-messages>
+    <h1>Register Page</h1>
+    <p><a href="/login">have an account? </a></p>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <fieldset>
+        <input type="text" placeholder="Username" formControlName="username" />
+      </fieldset>
+      <fieldset>
+        <input type="email" placeholder="Email" formControlName="email" />
+      </fieldset>
+      <fieldset>
+        <input
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
+      </fieldset>
+      <button [disabled]="data.isSubmitting">Submit</button>
+    </form>
+  </div>
+</ng-container>

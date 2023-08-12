@@ -6,26 +6,36 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { register } from '../../store/actions';
+import { authActions } from '../../store/actions';
 import { RegisterRequestInterface } from '../../types/registerRequest.interface';
 import { RouterLink } from '@angular/router';
-import { selectIsSubmitting } from '../../store/selector';
-import { AuthStateInterface } from '../../types/authState.interface';
+import {
+  selectIsSubmitting,
+  selectValidationsErrors,
+} from '../../store/reducers';
 import { CommonModule } from '@angular/common';
+import { combineLatest } from 'rxjs';
+import { BackendErrorMessagesComponent } from 'src/app/shared/backendErrorMessages/backendErrorMessages.component';
 
 @Component({
   selector: 'register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    CommonModule,
+    BackendErrorMessagesComponent,
+  ],
 })
 export class RegisterComponent {
-  isSubmitting$ = this.store$.select(selectIsSubmitting);
+  // isSubmitting$ = this.store$.select(selectIsSubmitting);
+  data$ = combineLatest({
+    isSubmitting: this.store$.select(selectIsSubmitting),
+    backendErrors: this.store$.select(selectValidationsErrors),
+  });
 
-  constructor(
-    private fb: FormBuilder,
-    private store$: Store<{ auth: AuthStateInterface }>
-  ) {}
+  constructor(private fb: FormBuilder, private store$: Store) {}
 
   form: FormGroup = this.fb.nonNullable.group({
     username: ['', Validators.required],
@@ -38,6 +48,6 @@ export class RegisterComponent {
     const request: RegisterRequestInterface = {
       user: this.form.getRawValue(),
     };
-    this.store$.dispatch(register({ request }));
+    this.store$.dispatch(authActions.register({ request }));
   }
 }
