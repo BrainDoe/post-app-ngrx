@@ -6,4 +6,9 @@ export const appRoutes: Route[] = [
     loadChildren: () =>
       import('src/app/auth/auth.route').then((m) => m.registerRoutes),
   },
+  {
+    path: '',
+    redirectTo: 'register',
+    pathMatch: 'full',
+  },
 ];

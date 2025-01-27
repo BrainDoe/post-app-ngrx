@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 import { combineLatest } from 'rxjs';
 import { BackendErrorMessagesComponent } from 'src/app/shared/backendErrorMessages/backendErrorMessages.component';
 
+const items = { name: 'Donatus Okwe' };
+
 @Component({
   selector: 'register',
   templateUrl: './register.component.html',
@@ -29,13 +31,25 @@ import { BackendErrorMessagesComponent } from 'src/app/shared/backendErrorMessag
   ],
 })
 export class RegisterComponent {
-  // isSubmitting$ = this.store$.select(selectIsSubmitting);
+  items = items;
+  isSubmitting$ = this.store$.select(selectIsSubmitting);
   data$ = combineLatest({
     isSubmitting: this.store$.select(selectIsSubmitting),
     backendErrors: this.store$.select(selectValidationsErrors),
   });
 
   constructor(private fb: FormBuilder, private store$: Store) {}
+
+  ngOnInit() {
+    console.log(this.items);
+
+    this.getUsers();
+  }
+
+  getUsers() {
+    console.log('users');
+    this.store$.dispatch(authActions.getUsers());
+  }
 
   form: FormGroup = this.fb.nonNullable.group({
     username: ['', Validators.required],
@@ -48,6 +62,7 @@ export class RegisterComponent {
     const request: RegisterRequestInterface = {
       user: this.form.getRawValue(),
     };
+
     this.store$.dispatch(authActions.register({ request }));
   }
 }

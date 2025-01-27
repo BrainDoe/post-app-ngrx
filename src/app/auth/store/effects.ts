@@ -27,3 +27,24 @@ export const registerEffect = createEffect(
   },
   { functional: true }
 );
+
+export const getUsersEffect = createEffect(
+  (actions$ = inject(Actions), authService = inject(AuthService)) => {
+    return actions$.pipe(
+      ofType(authActions.getUsers),
+      switchMap(() => {
+        return authService.getUsers().pipe(
+          map((users: CurrentUserInterface[]) => {
+            return authActions.getUsersSuccess({ users });
+          }),
+          catchError((error: HttpErrorResponse) => {
+            return of(
+              authActions.getUsersFailure({ errors: error.error.errors })
+            );
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);

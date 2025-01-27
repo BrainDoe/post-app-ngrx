@@ -10,10 +10,12 @@ import { BackendErrorsInterface } from 'src/app/auth/types/backendErrors';
 })
 export class BackendErrorMessagesComponent implements OnInit {
   @Input() backendErrors: BackendErrorsInterface = {};
+  @Input() items: any;
 
   errorMessages: string[] = [];
 
   ngOnInit() {
+    console.log(this.items);
     this.errorMessages = Object.keys(this.backendErrors).map((name: string) => {
       const messages = this.backendErrors[name].join(' ');
       return `${name} ${messages}`;

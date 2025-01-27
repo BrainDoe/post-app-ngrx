@@ -18,4 +18,8 @@ export class AuthService {
       .post<AuthResponseInterface>(`${this.baseUrl}`, data)
       .pipe(map((res) => res.user));
   }
+
+  getUsers(): Observable<CurrentUserInterface[]> {
+    return this.http.get<CurrentUserInterface[]>(`${this.baseUrl}`);
+  }
 }
